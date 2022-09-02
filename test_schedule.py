@@ -187,7 +187,7 @@ class Stuff:
         self.old_main_emote = dico_stuff[self.old_main]
 
         self.gear_url = url_assets + data[indice]["gear"]["image"]
-        self.end_time = time.ctime(int(data[indice]["end_time"]))
+        self.end_time = str(time.ctime(int(data[indice]["end_time"])))[11:16]
         try:
             self.frequent_bonus = data[indice]["gear"]["brand"]["frequent_skill"]["name"]
             self.frequent_bonus_emote = dico_stuff[self.frequent_bonus]

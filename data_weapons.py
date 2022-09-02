@@ -133,7 +133,14 @@ dico_armes_id = {
         
 
 def lisible(dico_weapon):
-    weapon_type = dico_weapon["DefaultHitEffectorType"]
+    if dico_weapon["DefaultHitEffectorType"] == "Maneuver":
+        weapon_type = "Dualies"
+    elif dico_weapon["DefaultHitEffectorType"] == "Spinner":
+        weapon_type = "Splatling"
+    elif dico_weapon["DefaultHitEffectorType"] == "Shelter":
+        weapon_type = "Brella"
+    else:
+        weapon_type = dico_weapon["DefaultHitEffectorType"]
     weapon_id = dico_weapon["Id"]
     weapon_name = dico_id_armes[weapon_id]
     weapon_range = dico_weapon["Range"]
