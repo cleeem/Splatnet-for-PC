@@ -135,15 +135,16 @@ dico_armes_id = {
 def lisible(dico_weapon):
     weapon_type = dico_weapon["DefaultHitEffectorType"]
     weapon_id = dico_weapon["Id"]
-    weapon_name_jp = dico_weapon["Label"]
+    weapon_name = dico_id_armes[weapon_id]
     weapon_range = dico_weapon["Range"]
     weapon_price = dico_weapon["ShopPrice"]
     unlock_rank = dico_weapon["ShopUnlockRank"]
     weapon_spe_pts = dico_weapon["SpecialPoint"]
-    weapon_url = url_image + dico_weapon["__RowId"] + ".webp"
-    weapon_image = "images_armes/" + dico_id_armes[weapon_id] + ".png" 
+    weapon_image = "images_armes/" + dico_id_armes[weapon_id] + ".png"
+    special_weapon = dico_weapon["SpecialWeapon"].replace("Work/Gyml/", "").replace(".spl__WeaponInfoSpecial.gyml", "")
+    sub_weapon = dico_weapon["SubWeapon"].replace("Work/Gyml/", "").replace(".spl__WeaponInfoSub.gyml", "")
 
-    return weapon_type, weapon_id, weapon_name_jp, weapon_price, unlock_rank, weapon_range, weapon_spe_pts, weapon_image
+    return weapon_name, weapon_type, weapon_price, unlock_rank, weapon_range, weapon_spe_pts, sub_weapon, special_weapon, weapon_image
 
 
 def get_info(weapon_id):

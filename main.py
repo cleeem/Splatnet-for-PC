@@ -66,7 +66,7 @@ class App(customtkinter.CTk):
         self.optionmenu_1.set("maps")
         self.optionmenu_1.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
-        self.button_rotations = customtkinter.CTkButton(master=self.frame_icon, text="weapons\ndata", text_font=("Roboto Medium", self.font_size), command=self.weapons_data, corner_radius=6, width=self.button_width, height=self.button_height)
+        self.button_rotations = customtkinter.CTkButton(master=self.frame_icon, text="weapon ndata\n(SP3 Vanilla kit only)", text_font=("Roboto Medium", self.font_size), command=self.weapons_data, corner_radius=6, width=self.button_width, height=self.button_height)
         self.button_rotations.place(relx=0.5, rely=0.7, anchor=tkinter.CENTER)
 
         self.button_splatnet = customtkinter.CTkButton(master=self.frame_icon, text="splatnet", text_font=("Roboto Medium", self.font_size), command=self.splatnet, corner_radius=6, width=self.button_width, height=self.button_height)
@@ -84,7 +84,7 @@ class App(customtkinter.CTk):
         self.frame_data = customtkinter.CTkFrame(master=self, width=self.current_width * 0.70, height=self.current_height*0.94, corner_radius=15, fg_color=("gray70", "gray25"))
         self.frame_data.place(relx=0.625, rely=0.5, anchor=tkinter.CENTER)
 
-        self.button_refresh = customtkinter.CTkButton(master=self.frame_data, text="↕\nresize", text_font=("Roboto Medium", self.font_size//2), command=self.refresh_scale, corner_radius=6, width=self.frame_data._current_height*0.05, height=15)
+        self.button_refresh = customtkinter.CTkButton(master=self.frame_data, text="resize", text_font=("Roboto Medium", self.font_size//2), command=self.refresh_scale, corner_radius=6, width=self.frame_data._current_height*0.05, height=15)
         self.button_refresh.place(relx=0.038, rely=0.5, anchor=tkinter.CENTER)
         
     def update_info(self, bouton):
@@ -181,12 +181,45 @@ class App(customtkinter.CTk):
                                                     values=self.liste_weapons_name, 
                                                     command=self.weapons, width=200, height=75,
                                                     text_font=("Roboto Medium", self.font_size), dropdown_text_font=("Roboto Medium", self.font_size), button_color="gray")
-        self.optionmenu_armes.place(relx=0.2, rely=0.2, anchor=tkinter.CENTER)
+        self.optionmenu_armes.place(relx=0.2, rely=0.1, anchor=tkinter.CENTER)
             
-    def weapons(self, weapon):
-        weapon_infos = data_weapons.get_info(weapon_id=weapon)
-        print(weapon_infos)
+        frame_name = customtkinter.CTkFrame(master=self.frame_data, width=self.frame_data._current_width*0.55, height=self.frame_data._current_height*0.1, corner_radius=15, fg_color=("gray70", "gray20"))
+        frame_name.place(relx=0.7, rely=0.1, anchor=tkinter.CENTER)
         
+        frame_info = customtkinter.CTkFrame(master=self.frame_data, width=self.frame_data._current_width*0.85, height=self.frame_data._current_height*0.8, corner_radius=15, fg_color=("gray70", "gray20"))
+        frame_info.place(relx=0.5, rely=0.575, anchor=tkinter.CENTER)
+
+    def weapons(self, weapon):
+        try:
+            frame_name.destroy()
+            frame_info.destroy()
+        except:
+            pass
+
+        weapon_infos = data_weapons.get_info(weapon_id=weapon)
+
+        frame_name = customtkinter.CTkFrame(master=self.frame_data, width=self.frame_data._current_width*0.55, height=self.frame_data._current_height*0.1, corner_radius=15, fg_color=("gray70", "gray20"))
+        frame_name.place(relx=0.7, rely=0.1, anchor=tkinter.CENTER)
+        
+        frame_info = customtkinter.CTkFrame(master=self.frame_data, width=self.frame_data._current_width*0.85, height=self.frame_data._current_height*0.8, corner_radius=15, fg_color=("gray70", "gray20"))
+        frame_info.place(relx=0.5, rely=0.575, anchor=tkinter.CENTER)
+
+        label_name = customtkinter.CTkLabel(master=frame_name, text=f"Infos : {weapon_infos[0]}",text_font=("Roboto Medium", self.font_size), text_color="white")  # font name and size in px
+        label_name.place(relx=0.5, rely=0.5,  anchor = tkinter.CENTER)
+
+        res = f"Weapon Type : {weapon_infos[1]} \n\nWeapon Price : {weapon_infos[2]} \n\nUnlock Rank : {weapon_infos[3]} \n\nRange : {weapon_infos[4]} \n\nPoints for Special : {weapon_infos[5]} \n\n Sub Weapon : {weapon_infos[6]} \n\nSpecial Weapon : {weapon_infos[7]} "
+
+        label_info = customtkinter.CTkLabel(master=frame_info, text=res,text_font=("Roboto Medium", self.font_size), text_color="white")  # font name and size in px
+        label_info.place(relx=0.3, rely=0.5,  anchor = tkinter.CENTER)
+
+        img_width = int((self.frame_data._current_width*0.8)*0.25)
+        img_height = int((self.frame_data._current_width*0.8)*0.25)
+
+        weapon_image = Image.open(weapon_infos[8]).resize((img_width, img_height))
+        self.weapon_image = ImageTk.PhotoImage(weapon_image)
+
+        label_image = tkinter.Label(master=frame_info, image=self.weapon_image, border=0, background=("gray20"))
+        label_image.place(relx=0.825, rely=0.775, anchor=tkinter.CENTER)  
 
     def splatnet(self):
         test = test_schedule.get_stuff(1)
