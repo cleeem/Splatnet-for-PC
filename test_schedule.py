@@ -171,7 +171,7 @@ class Rotation:
 
 
     def __str__(self) -> str:
-        return f"Current Rotation : \n\n{self.current_maps} \n\nMode : {self.current_mode}\n{self.current_start_time} to {self.current_end_time} \n\n\n\nNext Rotation : \n\n{self.next_maps} \n\nMode : {self.next_mode}\n{self.next_start_time} to {self.next_end_time}"
+        return f"Current Rotation : \n\n{self.current_maps} \nMode : {self.current_mode}\n{self.current_start_time} to {self.current_end_time} \n\n\n\nNext Rotation : \n{self.next_maps} \nMode : {self.next_mode}\n{self.next_start_time} to {self.next_end_time}"
 
 
 class Stuff:

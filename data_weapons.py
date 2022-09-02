@@ -140,9 +140,10 @@ def lisible(dico_weapon):
     weapon_price = dico_weapon["ShopPrice"]
     unlock_rank = dico_weapon["ShopUnlockRank"]
     weapon_spe_pts = dico_weapon["SpecialPoint"]
-    weapon_image = url_image + dico_weapon["__RowId"] + ".webp"
+    weapon_url = url_image + dico_weapon["__RowId"] + ".webp"
+    weapon_image = "images_armes/" + dico_id_armes[weapon_id] + ".png" 
 
-    return f"weapon_type : {weapon_type} \nweapon_id : {weapon_id} \njp name : {weapon_name_jp} \nweapon_price : {weapon_price} \nunlock rank : {unlock_rank} \nweapon_range : {weapon_range} \nweapon_spe_pts : {weapon_spe_pts} \nimage link : {weapon_image}"
+    return weapon_type, weapon_id, weapon_name_jp, weapon_price, unlock_rank, weapon_range, weapon_spe_pts, weapon_image
 
 
 def get_info(weapon_id):
