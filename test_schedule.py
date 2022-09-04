@@ -125,9 +125,12 @@ class Salmon:
 
         else :
             for elt in data["details"][0]["weapons"]:
-                current_weapon_list.append(elt["weapon"]["name"])
+                if not "coop_special_weapon" in elt:
+                    current_weapon_list.append(elt["weapon"]["name"])
+                else:
+                    current_weapon_list.append(elt["coop_special_weapon"]["name"])
 
-        self.current_weapon_list = f"{dico_armes[current_weapon_list[0]]}  |  {dico_armes[current_weapon_list[1]]}  |  {dico_armes[current_weapon_list[2]]}  |  {dico_armes[current_weapon_list[3]]} "
+        self.current_weapon_list = [current_weapon_list[0], current_weapon_list[1], current_weapon_list[2], current_weapon_list[3]]
 
 
         self.next_map = data["details"][1]["stage"]["name"]
@@ -141,9 +144,12 @@ class Salmon:
 
         else :
             for elt in data["details"][1]["weapons"]:
-                next_weapon_list.append(elt["weapon"]["name"])
-        
-        self.next_weapon_list = f"{dico_armes[next_weapon_list[0]]}  |  {dico_armes[next_weapon_list[1]]}  |  {dico_armes[next_weapon_list[2]]}  |  {dico_armes[next_weapon_list[3]]} "
+                if not "coop_special_weapon" in elt:
+                    next_weapon_list.append(elt["weapon"]["name"])
+                else:
+                    next_weapon_list.append(elt["coop_special_weapon"]["name"]) 
+
+        self.next_weapon_list = [next_weapon_list[0], next_weapon_list[1], next_weapon_list[2], next_weapon_list[3]]
     
 
     def __str__(self) -> str:
@@ -171,7 +177,7 @@ class Rotation:
 
 
     def __str__(self) -> str:
-        return f"Current Rotation : \n\n{self.current_maps} \nMode : {self.current_mode}\n{self.current_start_time} to {self.current_end_time} \n\n\n\nNext Rotation : \n{self.next_maps} \nMode : {self.next_mode}\n{self.next_start_time} to {self.next_end_time}"
+        return f"Current Rotation : \n\n{self.current_maps} \nMode : {self.current_mode}\n{self.current_start_time} to {self.current_end_time} \n\n\n\n\nNext Rotation : \n{self.next_maps} \nMode : {self.next_mode}\n{self.next_start_time} to {self.next_end_time}"
 
 
 class Stuff:
