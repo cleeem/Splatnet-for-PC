@@ -267,7 +267,7 @@ def main():
 	if check_for_updates():
 		sys.exit(0)
 
-	check_statink_key()
+	# check_statink_key()
 	set_language()
 
 	parser = argparse.ArgumentParser()

@@ -183,9 +183,13 @@ class Game:
         result = Image.open(BytesIO(img_temp)).convert("RGB")
         result.save(f"image_results.png")
 
-partie = Game()
+# partie = Game()
 # img_home = partie.get_image_home()
-img_result = partie.get_image_game()
+# img_result = partie.get_image_game()
+
+# for k,v in partie.get_data(45).items():
+#     if not "image" in k: 
+#         print(k,v)
 
 # import sys
 

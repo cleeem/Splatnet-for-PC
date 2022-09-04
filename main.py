@@ -24,11 +24,92 @@ class Widget(customtkinter.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.title(App.APP_NAME)
-        self.geometry(f"500 x 400")
-        
+        self.title("Widget")
+        self.geometry(f"300 x 100")
+        self.minsize(300, 100)
+        self.maxsize(300, 100)
 
+        self.current_power = 0
+        self.power_variation = 0
+        self.power_variation_color = "white"
+        self.kills = 0
+        self.assists = 0
+        self.deaths = 0
+        self.wins = 0
+        self.looses = 0
+        self.win_percent = "00%"
+
+        self.get_data_widget()
+        self.render_data()
+        
+    def get_data_widget(self):
+        partie = splatnet.Game()
+        data = partie.get_data()
+        if data["mode"] == "gachi":
+            self.kills = data["kill"]
+            self.assists = data["kill_or_assist"] - data["kill"]
+            self.deaths = data["death"]
+
+            if data["x_power_after"] != None:
+                if self.wins > 0 or self.looses > 0:
+                    self.power_variation = data["x_power_after"] - self.current_power
+                    if self.power_variation>0:
+                        self.power_variation_color = "green"
+                    elif self.power_variation<0:
+                        self.power_variation_color = "red"
+                    else:
+                        self.power_variation_color = "white"
+                
+                self.current_power = data["x_power_after"]
+            else:
+                self.power_variation = "0.0"
+                self.current_power = "calculating" 
+
+            if data["result"] == "win":
+                self.wins += 1
+            else:
+                self.looses += 1
+
+            if self.wins == 0:
+                self.win_percent = "0%"
+            elif self.looses == 0:
+                self.win_percent == "100%"
+            else:
+                self.win_percent = f"{(self.looses/self.win_percent)*100}%"
+
+    def render_data(self):
+        
+        self.frame_data = customtkinter.CTkFrame(master=self, width=self.current_width, height=self.current_height)
+        self.frame_data.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+
+        self.button_refresh= customtkinter.CTkButton(master=self.frame_data, text="🔁", text_font=("Roboto Medium", 10), command=self.refresh, corner_radius=15, width=10, height=15)
+        self.button_refresh.place(relx=0.9, rely=0.85, anchor=tkinter.CENTER)
+
+        label_info_power_variation = customtkinter.CTkLabel(master=self.frame_data, text=self.power_variation ,text_font=("Roboto Medium", 17),justify=tkinter.LEFT , text_color=self.power_variation_color)  # font name and size in px
+        label_info_power_variation.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
+
+        label_info_power = customtkinter.CTkLabel(self.frame_data, text=self.current_power, width=75 ,text_font=("Roboto Medium", 13),justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_power.place(relx=0.15, rely=0.25, anchor=tkinter.CENTER)
+
+        label_info_wins = customtkinter.CTkLabel(self.frame_data, text=f"Wins {self.wins}", width=75 ,text_font=("Roboto Medium", 10),justify=tkinter.LEFT , text_color="red")  # font name and size in px
+        label_info_wins.place(relx=0.425, rely=0.25, anchor=tkinter.CENTER)
+
+        label_info_loose = customtkinter.CTkLabel(self.frame_data, text=f"Lose {self.looses}", width=75 ,text_font=("Roboto Medium", 10),justify=tkinter.LEFT , text_color="green")  # font name and size in px
+        label_info_loose.place(relx=0.625, rely=0.25, anchor=tkinter.CENTER)
+
+        label_info_percent = customtkinter.CTkLabel(self.frame_data, text=self.win_percent, width=50,text_font=("Roboto Medium", 10),justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_percent.place(relx=0.9, rely=0.25, anchor=tkinter.CENTER)
+
+        res = f"{self.kills}({self.assists})k  {self.deaths}d  {round(self.kills/self.deaths), 4}k/d"
+
+        label_info_kda = customtkinter.CTkLabel(self.frame_data, text=res, text_font=("Roboto Medium", 12),justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_kda.place(relx=0.55, rely=0.7, anchor=tkinter.CENTER)
     
+    def refresh(self):
+        self.frame_data.destroy()
+        self.get_data_widget()
+        self.render_data()
+
     def on_closing(self, event=0):
         self.destroy()
 
@@ -275,10 +356,14 @@ class App(customtkinter.CTk):
         label_info_6.place(relx=0.4, rely=0.5, anchor=tkinter.CENTER)
 
     def start_widget(self):
+        self.crea_frame_data()
+
+        label_info_1 = customtkinter.CTkLabel(master=self.frame_data, text="Loading widget \nit might take some time" ,text_font=("Roboto Medium", 40),justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_1.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+
         widget = Widget()
         widget.start()
         
-
     def get_maps(self, test : test_schedule.Rotation):
         img_width = int((self.frame_data._current_width*0.85)*0.3)
         img_height = int((self.frame_data._current_width*0.8)*0.16)
