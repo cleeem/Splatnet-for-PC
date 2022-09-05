@@ -4,19 +4,11 @@ import os
 import tkinter 
 import json
 from PIL import Image, ImageTk
+import requests
 
-from builtins import input
-import requests, json, sys
-import base64, hashlib
-
-import sys
-sys.path.append("splatnet_infos/")
-import splatnet2statink as spl2
-import iksm
 import dbs
 import game as splatnet
 
-import data_weapons 
 import test_schedule
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
@@ -24,7 +16,7 @@ customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "gre
 
 
 PATH = os.path.dirname(os.path.realpath(__file__))
-    
+
 
 class Widget(customtkinter.CTk):
     def __init__(self, *args, **kwargs):
@@ -155,25 +147,14 @@ class App(customtkinter.CTk):
         
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
-        self.liste_weapons_id = []
-        self.liste_weapons_name = []
-        dico = sorted(data_weapons.dico_id_armes)
-        for id in dico:
-            self.liste_weapons_id.append(int(id))
-            self.liste_weapons_name.append(data_weapons.dico_id_armes[int(id)])
         self.font_size = (self.current_height + self.current_width)//110
-
-        config_data = {"token": "", "cookie": "", "user_lang": "en-US", "session_token": ""}
-        config_file = open("config.txt", "w")
-        config_file.seek(0)
-        config_file.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
-        config_file.close()
         
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
+        self.dl_maps()
+
         self.creation()
-        self.create_img_home()
 
     def creation(self):
         self.crea_frame_icon()
@@ -254,9 +235,11 @@ class App(customtkinter.CTk):
         if img_width/img_height>1.3:
             while img_width/img_height>1.3:
                 img_height += 1
-
-        image_home = Image.open("image_home.png").resize((img_width, img_height))
-        self.image_home = ImageTk.PhotoImage(image_home)
+        try:
+            image_home = Image.open("image_home.png").resize((img_width, img_height))
+            self.image_home = ImageTk.PhotoImage(image_home)
+        except:
+            self.create_img_home()
 
     def home(self):
         self.crea_frame_data()
@@ -268,8 +251,14 @@ class App(customtkinter.CTk):
 
         res_1 = self.get_res(test_schedule.get_stuff(0))
 
+        liste = [test_schedule.get_stuff(0).gear_url]
+        self.dl_shop_images(liste=liste)
+
         label_info_1 = customtkinter.CTkLabel(master=frame_1, text=res_1 ,text_font=("Roboto Medium", int(self.font_size//1.6)), height=150 ,justify=tkinter.LEFT , text_color="white")  # font name and size in px
         label_info_1.place(relx=0.3, rely=0.5, anchor=tkinter.CENTER)
+
+        label_info_1_image = customtkinter.CTkLabel(master=frame_1, image=self.gear_1 ,text_font=("Roboto Medium", int(self.font_size//1.6)), height=100 ,justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_1_image.place(relx=0.8, rely=0.7, anchor=tkinter.CENTER)
 
         width = self.frame_data._current_width * 0.5
         height = self.frame_data._current_height * 0.5
@@ -294,7 +283,6 @@ class App(customtkinter.CTk):
         temp.get_image_game(indice)
 
     def get_img_results(self,arg):
-
         img_width = int((self.frame_2._current_width)-20)
         img_height = int((self.frame_2._current_height)-20)
 
@@ -352,6 +340,40 @@ class App(customtkinter.CTk):
         res = f"Brand : {test_splat.brand} \nName : {test_splat.name_stuff} \nFrequent Bonus : {test_splat.frequent_bonus}  \n\nNew Price : {test_splat.new_price}  |  Old Price : {test_splat.old_price}   \n\nNew Main : {test_splat.new_main}  \nOld Main : {test_splat.old_main} \n\nEnd Time : {test_splat.end_time} "
         return res
 
+    def dl_shop_images(self, liste):
+                
+        for i,url in enumerate(liste):
+            url_save = f"image_shop_{i+1}.png"
+            response = requests.get(url)
+            if response.status_code:
+                fp = open(url_save, 'wb')
+                fp.write(response.content)
+                fp.close()
+
+        img_width = 100
+        img_height = 100
+
+        gear_1 = Image.open("image_shop_1.png").resize((img_width, img_height))
+        self.gear_1 = ImageTk.PhotoImage(gear_1)
+
+        try:
+            gear_2 = Image.open(f"image_shop_2.png").resize((img_width, img_height))
+            self.gear_2 = ImageTk.PhotoImage(gear_2)
+
+            gear_3 = Image.open(f"image_shop_3.png").resize((img_width, img_height))
+            self.gear_3 = ImageTk.PhotoImage(gear_3)
+
+            gear_4 = Image.open(f"image_shop_4.png").resize((img_width, img_height))
+            self.gear_4 = ImageTk.PhotoImage(gear_4)
+
+            gear_5 = Image.open(f"image_shop_5.png").resize((img_width, img_height))
+            self.gear_5 = ImageTk.PhotoImage(gear_5)
+
+            gear_6 = Image.open(f"image_shop_6.png").resize((img_width, img_height))
+            self.gear_6 = ImageTk.PhotoImage(gear_6)
+        except:
+            pass
+
     def splatnet(self):
 
         self.crea_frame_data()
@@ -376,11 +398,32 @@ class App(customtkinter.CTk):
         frame_6.place(relx=0.75, rely=0.825, anchor=tkinter.CENTER)
 
         liste_res = []
+        liste_url = []
         for i in range(6):
             temp = test_schedule.get_stuff(i)
             res = f"Brand : {temp.brand}  \nFrequent Bonus : {temp.frequent_bonus}  \n\nNew Price : {temp.new_price}  |  Old Price : {temp.old_price}   \n\nNew Main : {temp.new_main}  \nOld Main : {temp.old_main} \n\n End Time : {temp.end_time}  "
             liste_res.append(res)
+            liste_url.append(temp.gear_url)
 
+        self.dl_shop_images(liste_url)
+
+        label_info_1_image = customtkinter.CTkLabel(master=frame_1, image=self.gear_1 ,text_font=("Roboto Medium", int(self.font_size//1.6)), height=100 ,justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_1_image.place(relx=0.8, rely=0.7, anchor=tkinter.CENTER)
+        
+        label_info_2_image = customtkinter.CTkLabel(master=frame_2, image=self.gear_2 ,text_font=("Roboto Medium", int(self.font_size//1.6)), height=100 ,justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_2_image.place(relx=0.8, rely=0.7, anchor=tkinter.CENTER)
+
+        label_info_3_image = customtkinter.CTkLabel(master=frame_3, image=self.gear_3 ,text_font=("Roboto Medium", int(self.font_size//1.6)), height=100 ,justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_3_image.place(relx=0.8, rely=0.7, anchor=tkinter.CENTER)
+
+        label_info_4_image = customtkinter.CTkLabel(master=frame_4, image=self.gear_4 ,text_font=("Roboto Medium", int(self.font_size//1.6)), height=100 ,justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_4_image.place(relx=0.8, rely=0.7, anchor=tkinter.CENTER)
+
+        label_info_5_image = customtkinter.CTkLabel(master=frame_5, image=self.gear_5 ,text_font=("Roboto Medium", int(self.font_size//1.6)), height=100 ,justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_5_image.place(relx=0.8, rely=0.7, anchor=tkinter.CENTER)
+
+        label_info_6_image = customtkinter.CTkLabel(master=frame_6, image=self.gear_6 ,text_font=("Roboto Medium", int(self.font_size//1.6)), height=100, justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_6_image.place(relx=0.8, rely=0.7, anchor=tkinter.CENTER)
 
         label_info_1 = customtkinter.CTkLabel(master=frame_1, text=liste_res[0] ,text_font=("Roboto Medium", int(self.font_size//1.6)), height=150 ,justify=tkinter.LEFT , text_color="white")  # font name and size in px
         label_info_1.place(relx=0.4, rely=0.5, anchor=tkinter.CENTER)
@@ -410,20 +453,50 @@ class App(customtkinter.CTk):
         self.home()
         widget.start()
         
+    def dl_maps(self):
+        liste_map = ["https://cdn.wikimg.net/en/splatoonwiki/images/thumb/f/f7/S2_Stage_The_Reef.png/200px-S2_Stage_The_Reef.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/c/cd/S2_Stage_Musselforge_Fitness.png/200px-S2_Stage_Musselforge_Fitness.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/3/31/S2_Stage_Starfish_Mainstage.png/200px-S2_Stage_Starfish_Mainstage.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/e/ed/S2_Stage_Humpback_Pump_Track.png/200px-S2_Stage_Humpback_Pump_Track.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/c/c9/S2_Stage_Inkblot_Art_Academy.png/200px-S2_Stage_Inkblot_Art_Academy.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/6/62/S2_Stage_Sturgeon_Shipyard.png/200px-S2_Stage_Sturgeon_Shipyard.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/7/7e/S2_Stage_Manta_Maria.png/200px-S2_Stage_Manta_Maria.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/3/37/S2_Stage_Moray_Towers.png/200px-S2_Stage_Moray_Towers.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/f/f0/S2_Stage_Kelp_Dome.png/200px-S2_Stage_Kelp_Dome.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/9/91/S2_Stage_Snapper_Canal.png/200px-S2_Stage_Snapper_Canal.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/1/11/S2_Stage_Blackbelly_Skatepark.png/200px-S2_Stage_Blackbelly_Skatepark.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/6/6a/S2_Stage_Walleye_Warehouse.png/200px-S2_Stage_Walleye_Warehouse.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/6/6c/S2_Stage_Shellendorf_Institute.png/200px-S2_Stage_Shellendorf_Institute.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/4/49/S2_Stage_Port_Mackerel.png/200px-S2_Stage_Port_Mackerel.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/d/d4/S2_Stage_MakoMart.png/200px-S2_Stage_MakoMart.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/f/f5/S2_Stage_Arowana_Mall.png/200px-S2_Stage_Arowana_Mall.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/d/d0/S2_Stage_Goby_Arena.png/200px-S2_Stage_Goby_Arena.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/e/ef/S2_Stage_Camp_Triggerfish.png/200px-S2_Stage_Camp_Triggerfish.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/1/14/S2_Stage_Wahoo_World.png/200px-S2_Stage_Wahoo_World.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/d/da/S2_Stage_New_Albacore_Hotel.png/200px-S2_Stage_New_Albacore_Hotel.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/2/20/S2_Stage_Ancho-V_Games.png/200px-S2_Stage_Ancho-V_Games.png","https://cdn.wikimg.net/en/splatoonwiki/images/thumb/1/10/S2_Stage_Skipper_Pavilion.png/200px-S2_Stage_Skipper_Pavilion.png"]
+        self.dico_map = {}
+        for i,url in enumerate(liste_map):
+            url_save = f"image_{i+1}.png"
+            self.dico_map[url[66:]] = url_save
+            response = requests.get(url)
+            if response.status_code:
+                fp = open(url_save, 'wb')
+                fp.write(response.content)
+                fp.close()
+
+
     def get_maps(self, test : test_schedule.Rotation):
         img_width = int((self.frame_data._current_width*0.85)*0.3)
         img_height = int((self.frame_data._current_width*0.8)*0.16)
 
-        current_map_a = Image.open("maps_splatoon/200px-S2_Stage_" + test.current_stage_a.replace(" ", "_") + ".png").resize((img_width, img_height))
+        url_a = ""
+        url_b = ""
+        url_a_next = ""
+        url_b_next = ""
+                
+        uwu = test.next_stage_b.replace(" ","_")
+
+        for k,v in self.dico_map.items():
+            if test.current_stage_a.replace(" ","_") in k:
+                url_a = v
+            if test.current_stage_b.replace(" ","_") in k :
+                url_b = v
+            if test.next_stage_b.replace(" ","_") in k :
+                url_a_next = v
+            if uwu in k :
+                url_b_next = v
+
+        current_map_a = Image.open(url_a).resize((img_width, img_height))
         self.current_map_a = ImageTk.PhotoImage(current_map_a)
 
-        current_map_b = Image.open("maps_splatoon/200px-S2_Stage_" + test.current_stage_b.replace(" ", "_") + ".png").resize((img_width, img_height))
+        current_map_b = Image.open(url_b).resize((img_width, img_height))
         self.current_map_b = ImageTk.PhotoImage(current_map_b)            
 
-        next_map_a = Image.open("maps_splatoon/200px-S2_Stage_" + test.next_stage_a.replace(" ", "_") + ".png").resize((img_width, img_height))
+        next_map_a = Image.open(url_a_next).resize((img_width, img_height))
         self.next_map_a = ImageTk.PhotoImage(next_map_a)   
 
-        next_map_b = Image.open("maps_splatoon/200px-S2_Stage_" + test.next_stage_b.replace(" ", "_") + ".png").resize((img_width, img_height))
+        next_map_b = Image.open(url_b_next).resize((img_width, img_height))
         self.next_map_b = ImageTk.PhotoImage(next_map_b)
 
     def maps(self, arg):
@@ -486,5 +559,11 @@ class App(customtkinter.CTk):
 
 
 if __name__ == "__main__":
-    app = Widget()
+    app = App()
+    
     app.start()
+
+
+"""
+pyinstaller --noconfirm --onefile --console --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/dbs.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/game.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/iksm.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/image_home.png;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/image_results.png;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/salmonrun.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/splatnet2statink.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/test_schedule.py;." --add-data "c:\users\cleme\appdata\local\programs\python\python310\lib\site-packages/customtkinter;customtkinter"  "C:/Users/cleme/code/python/Splatnet-for-PC/main.py"
+"""
