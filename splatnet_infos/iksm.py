@@ -4,8 +4,8 @@ from __future__ import print_function
 from builtins import input
 import requests, json, re, sys
 import os, base64, hashlib
-import uuid, time, random, string
 from bs4 import BeautifulSoup
+import webbrowser
 
 session = requests.Session()
 version = "unknown"
@@ -76,6 +76,8 @@ def log_in(ver):
 	r = session.get(url, headers=app_head, params=body)
 
 	post_login = r.history[0].url
+
+	webbrowser.open(url=post_login)
 
 	print("\nMake sure you have fully read the \"Cookie generation\" section of the readme before proceeding. To manually input a cookie instead, enter \"skip\" at the prompt below.")
 	print("\nNavigate to this URL in your browser:")

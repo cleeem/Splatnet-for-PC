@@ -898,3 +898,85 @@ fest_ranks = {
 	3: 'champion',
 	4: 'king'
 }
+
+rules =	[
+    {
+	"key": "area",
+	"name": {
+		"de_DE": "Herrschaft",
+		"en_GB": "Splat Zones",
+		"en_US": "Splat Zones",
+		"es_ES": "Pintazonas",
+		"es_MX": "Pintazonas",
+		"fr_CA": "Défense de zone",
+		"fr_FR": "Défense de zone",
+		"it_IT": "Zona splat",
+		"ja_JP": "ガチエリア",
+		"nl_NL": "Spetterzones",
+		"ru_RU": "Бой за зоны",
+		"zh_CN": "抢地对战",
+		"zh_TW": "搶地對戰"
+		}
+    },
+	{
+		"key": "yagura",
+		"name": {
+			"de_DE": "Turmkommando",
+			"en_GB": "Tower Control",
+			"en_US": "Tower Control",
+			"es_ES": "Torre",
+			"es_MX": "Torre",
+			"fr_CA": "Expédition risquée",
+			"fr_FR": "Expédition risquée",
+			"it_IT": "Torre Mobile",
+			"ja_JP": "ガチヤグラ",
+			"nl_NL": "Torentwist",
+			"ru_RU": "Бой за башню",
+			"zh_CN": "控塔对战",
+			"zh_TW": "控塔對戰"
+		}
+	},
+	{
+		"key": "hoko",
+		"name": {
+			"de_DE": "Operation Goldfisch",
+			"en_GB": "Rainmaker",
+			"en_US": "Rainmaker",
+			"es_ES": "Pez dorado",
+			"es_MX": "Pez dorado",
+			"fr_CA": "Mission Bazookarpe",
+			"fr_FR": "Mission Bazookarpe",
+			"it_IT": "Mission Bazookarp",
+			"ja_JP": "ガチホコバトル",
+			"nl_NL": "Bazookarper",
+			"ru_RU": "Мегакарп",
+			"zh_CN": "运鱼对战",
+			"zh_TW": "運魚對戰"
+		}
+	},
+	{
+		"key": "c",
+		"name": {
+			"de_DE": "Clam Blitz",
+			"en_GB": "Clam Blitz",
+			"en_US": "Clam Blitz",
+			"es_ES": "Clam Blitz",
+			"es_MX": "Clam Blitz",
+			"fr_CA": "Pluie de palourdes",
+			"fr_FR": "Pluie de palourdes",
+			"it_IT": "Clam Blitz",
+			"ja_JP": "ガチアサリ",
+			"nl_NL": "Clam Blitz",
+			"ru_RU": "Clam Blitz",
+			"zh_CN": "蛤蜊对战",
+			"zh_TW": "蛤蜊對戰"
+		}
+	}
+]
+
+rules_short ={
+	"aera" : "Splat Zones",
+	"yagura" : "Tower Control",
+	"hoko" : "Rainmaker",
+	"asari" : "Clam Blitz",	
+}

@@ -32,8 +32,8 @@ A_VERSION = "1.8.2"
 if getattr(sys, 'frozen', False):
 	app_path = os.path.dirname(sys.executable)
 elif __file__:
-	app_path = os.path.dirname("../token/config.txt")
-config_path = os.path.join(app_path, "config.txt")
+	app_path = os.path.dirname(__file__)
+config_path = os.path.join("./", "config.txt")
 
 try:
 	config_file = open(config_path, "r")
@@ -42,7 +42,7 @@ try:
 	
 except (IOError, ValueError):
 	print("Generating new config file.")
-	config_data = {"api_key": "", "cookie": "", "user_lang": "", "session_token": ""}
+	config_data = {"cookie": "", "user_lang": "", "session_token": ""}
 	config_file = open(config_path, "w")
 	config_file.seek(0)
 	config_file.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
@@ -53,13 +53,13 @@ except (IOError, ValueError):
 
 #########################
 ## API KEYS AND TOKENS ##
-API_KEY       = config_data["api_key"] # for stat.ink
+# API_KEY       = config_data["api_key"] # for stat.ink
 YOUR_COOKIE   = config_data["cookie"] # iksm_session
 try: # support for pre-v1.0.0 config.txts
 	SESSION_TOKEN = config_data["session_token"] # to generate new cookies in the future
 except:
 	SESSION_TOKEN = ""
-USER_LANG     = config_data["user_lang"] # only works with your game region's supported languages
+USER_LANG     = "en-US" # only works with your game region's supported languages
 #########################
 
 debug = False # print out payload and exit. can use with geargrabber2.py & saving battle jsons
@@ -163,8 +163,8 @@ def write_config(tokens):
 	config_file = open(config_path, "r")
 	config_data = json.load(config_file)
 
-	global API_KEY
-	API_KEY = config_data["api_key"]
+	# global API_KEY
+	# API_KEY = config_data["api_key"]
 	global SESSION_TOKEN
 	SESSION_TOKEN = config_data["session_token"]
 	global YOUR_COOKIE

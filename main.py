@@ -2,16 +2,22 @@ from genericpath import exists
 import customtkinter
 import os
 import tkinter 
+import json
 from PIL import Image, ImageTk
-import webbrowser
+
+from builtins import input
+import requests, json, sys
+import base64, hashlib
 
 import sys
 sys.path.append("splatnet_infos/")
+import splatnet2statink as spl2
+import iksm
+import dbs
 import game as splatnet
 
 import data_weapons 
 import test_schedule
-
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -32,12 +38,17 @@ class Widget(customtkinter.CTk):
         self.current_power = 0
         self.power_variation = 0
         self.power_variation_color = "white"
+
         self.kills = 0
         self.assists = 0
         self.deaths = 0
+        self.kda = 0
+
         self.wins = 0
         self.looses = 0
-        self.win_percent = "00%"
+        self.win_percent = 0
+
+        self.rule = ""
 
         self.get_data_widget()
         self.render_data()
@@ -45,14 +56,18 @@ class Widget(customtkinter.CTk):
     def get_data_widget(self):
         partie = splatnet.Game()
         data = partie.get_data()
+    
         if data["mode"] == "gachi":
-            self.kills = data["kill"]
+            self.rule = dbs.rules_short[data["rule"]]
+
+            self.kills = data["kill_or_assist"]
             self.assists = data["kill_or_assist"] - data["kill"]
             self.deaths = data["death"]
+            self.kda = round(data["kill"] / self.deaths, 4)
 
             if data["x_power_after"] != None:
                 if self.wins > 0 or self.looses > 0:
-                    self.power_variation = data["x_power_after"] - self.current_power
+                    self.power_variation = round(float(data["x_power_after"]) - float(self.current_power), 4)
                     if self.power_variation>0:
                         self.power_variation_color = "green"
                     elif self.power_variation<0:
@@ -71,11 +86,13 @@ class Widget(customtkinter.CTk):
                 self.looses += 1
 
             if self.wins == 0:
-                self.win_percent = "0%"
+                self.win_percent = "0"
             elif self.looses == 0:
-                self.win_percent == "100%"
+                self.win_percent == "100"
+            elif self.wins == self.looses:
+                self.win_percent = "50"
             else:
-                self.win_percent = f"{(self.looses/self.win_percent)*100}%"
+                self.win_percent = f"{(float(self.looses)/float(self.wins))*100}"
 
     def render_data(self):
         
@@ -83,13 +100,16 @@ class Widget(customtkinter.CTk):
         self.frame_data.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
         self.button_refresh= customtkinter.CTkButton(master=self.frame_data, text="🔁", text_font=("Roboto Medium", 10), command=self.refresh, corner_radius=15, width=10, height=15)
-        self.button_refresh.place(relx=0.9, rely=0.85, anchor=tkinter.CENTER)
+        self.button_refresh.place(relx=0.9, rely=0.8, anchor=tkinter.CENTER)
 
         label_info_power_variation = customtkinter.CTkLabel(master=self.frame_data, text=self.power_variation ,text_font=("Roboto Medium", 17),justify=tkinter.LEFT , text_color=self.power_variation_color)  # font name and size in px
-        label_info_power_variation.place(relx=0.15, rely=0.7, anchor=tkinter.CENTER)
+        label_info_power_variation.place(relx=0.15, rely=0.8, anchor=tkinter.CENTER)
 
         label_info_power = customtkinter.CTkLabel(self.frame_data, text=self.current_power, width=75 ,text_font=("Roboto Medium", 13),justify=tkinter.LEFT , text_color="white")  # font name and size in px
         label_info_power.place(relx=0.15, rely=0.25, anchor=tkinter.CENTER)
+
+        label_info_rule = customtkinter.CTkLabel(self.frame_data, text=self.rule, width=75 ,text_font=("Roboto Medium", 7),justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_rule.place(relx=0.15, rely=0.5, anchor=tkinter.CENTER)
 
         label_info_wins = customtkinter.CTkLabel(self.frame_data, text=f"Wins {self.wins}", width=75 ,text_font=("Roboto Medium", 10),justify=tkinter.LEFT , text_color="red")  # font name and size in px
         label_info_wins.place(relx=0.425, rely=0.25, anchor=tkinter.CENTER)
@@ -97,10 +117,10 @@ class Widget(customtkinter.CTk):
         label_info_loose = customtkinter.CTkLabel(self.frame_data, text=f"Lose {self.looses}", width=75 ,text_font=("Roboto Medium", 10),justify=tkinter.LEFT , text_color="green")  # font name and size in px
         label_info_loose.place(relx=0.625, rely=0.25, anchor=tkinter.CENTER)
 
-        label_info_percent = customtkinter.CTkLabel(self.frame_data, text=self.win_percent, width=50,text_font=("Roboto Medium", 10),justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        label_info_percent = customtkinter.CTkLabel(self.frame_data, text=str(self.win_percent) + "%", width=50,text_font=("Roboto Medium", 10),justify=tkinter.LEFT , text_color="white")  # font name and size in px
         label_info_percent.place(relx=0.9, rely=0.25, anchor=tkinter.CENTER)
 
-        res = f"{self.kills}({self.assists})k  {self.deaths}d  {round(self.kills/self.deaths), 4}k/d"
+        res = f"{self.kills}({self.assists})k  {self.deaths}d  {self.kda}k/d"
 
         label_info_kda = customtkinter.CTkLabel(self.frame_data, text=res, text_font=("Roboto Medium", 12),justify=tkinter.LEFT , text_color="white")  # font name and size in px
         label_info_kda.place(relx=0.55, rely=0.7, anchor=tkinter.CENTER)
@@ -115,6 +135,7 @@ class Widget(customtkinter.CTk):
 
     def start(self):
         self.mainloop()
+
 
     
 class App(customtkinter.CTk):
@@ -142,10 +163,17 @@ class App(customtkinter.CTk):
             self.liste_weapons_name.append(data_weapons.dico_id_armes[int(id)])
         self.font_size = (self.current_height + self.current_width)//110
 
+        config_data = {"token": "", "cookie": "", "user_lang": "en-US", "session_token": ""}
+        config_file = open("config.txt", "w")
+        config_file.seek(0)
+        config_file.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
+        config_file.close()
+        
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
         self.creation()
+        self.create_img_home()
 
     def creation(self):
         self.crea_frame_icon()
@@ -220,12 +248,12 @@ class App(customtkinter.CTk):
 
     def get_img_home(self, frame):
         
-        img_width = int((frame._current_width))
-        img_height = int((frame._current_height))
+        img_width = int((frame._current_width)-20)
+        img_height = int((frame._current_height)-20)
 
         if img_width/img_height>1.3:
             while img_width/img_height>1.3:
-                img_height += 10
+                img_height += 1
 
         image_home = Image.open("image_home.png").resize((img_width, img_height))
         self.image_home = ImageTk.PhotoImage(image_home)
@@ -266,8 +294,9 @@ class App(customtkinter.CTk):
         temp.get_image_game(indice)
 
     def get_img_results(self,arg):
-        img_width = int((self.frame_2._current_width))
-        img_height = int((self.frame_2._current_height))
+
+        img_width = int((self.frame_2._current_width)-20)
+        img_height = int((self.frame_2._current_height)-20)
 
         if img_width/img_height>1.65:
             while img_width/img_height>1.65:
@@ -284,13 +313,15 @@ class App(customtkinter.CTk):
         label_image = customtkinter.CTkLabel(master=self.frame_2, image=self.image_result,text_font=("Roboto Medium", self.font_size), text_color="white")  # font name and size in px
         label_image.place(relx=0.5, rely=0.5,  anchor = tkinter.CENTER)
 
+        self.label_info_loading.destroy()
+
     def stats(self):
         self.crea_frame_data()
 
         liste = [str(i) for i in range(1,51)]
 
         self.frame = customtkinter.CTkFrame(master=self.frame_data, width=self.frame_data._current_width * 0.9, height=100, corner_radius=15, fg_color=("gray70", "gray20"))
-        self.frame.place(relx=0.5, rely=0.1, anchor=tkinter.CENTER)
+        self.frame.place(relx=0.5, rely=0.075, anchor=tkinter.CENTER)
 
         self.optionmenu_stats = customtkinter.CTkComboBox(master=self.frame, 
                                                     values=liste, 
@@ -301,14 +332,28 @@ class App(customtkinter.CTk):
         label_info = customtkinter.CTkLabel(master=self.frame, text=f"Match you want to see \n(recent to old)",text_font=("Roboto Medium", self.font_size), text_color="white")  # font name and size in px
         label_info.place(relx=0.2, rely=0.5,  anchor = tkinter.CENTER)
 
-        self.frame_2 = customtkinter.CTkFrame(master=self.frame_data,  width=self.frame_data._current_width * 0.9, height=self.frame_data._current_height * 0.7, corner_radius=15, fg_color=("gray70", "gray20"))
-        self.frame_2.place(relx=0.5, rely=0.6, anchor=tkinter.CENTER)
+        frame_width = int(self.frame_data._current_width * 0.9)
+        frame_height = int(self.frame_data._current_height * 0.7,)
+
+        if frame_width/frame_height>1.65:
+            while frame_width/frame_height>1.65:
+                frame_height += 5
+        else:
+            while frame_width/frame_height<1.65:
+                frame_height -= 5
+
+        self.frame_2 = customtkinter.CTkFrame(master=self.frame_data,  width=frame_width + 30, height=frame_height + 30, corner_radius=15, fg_color=("gray70", "gray20"))
+        self.frame_2.place(relx=0.5, rely=0.575, anchor=tkinter.CENTER)
+
+        self.label_info_loading = customtkinter.CTkLabel(master=self.frame_2, text="Loading data from match \nmight take some time" ,text_font=("Roboto Medium", 40),justify=tkinter.LEFT , text_color="white")  # font name and size in px
+        self.label_info_loading.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
     def get_res(self, test_splat):
         res = f"Brand : {test_splat.brand} \nName : {test_splat.name_stuff} \nFrequent Bonus : {test_splat.frequent_bonus}  \n\nNew Price : {test_splat.new_price}  |  Old Price : {test_splat.old_price}   \n\nNew Main : {test_splat.new_main}  \nOld Main : {test_splat.old_main} \n\nEnd Time : {test_splat.end_time} "
         return res
 
     def splatnet(self):
+
         self.crea_frame_data()
         hauteur = self.frame_data._current_height * 0.3
         largeur = self.current_width * 0.325
@@ -360,8 +405,9 @@ class App(customtkinter.CTk):
 
         label_info_1 = customtkinter.CTkLabel(master=self.frame_data, text="Loading widget \nit might take some time" ,text_font=("Roboto Medium", 40),justify=tkinter.LEFT , text_color="white")  # font name and size in px
         label_info_1.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
-
         widget = Widget()
+        label_info_1.destroy()
+        self.home()
         widget.start()
         
     def get_maps(self, test : test_schedule.Rotation):
@@ -440,5 +486,5 @@ class App(customtkinter.CTk):
 
 
 if __name__ == "__main__":
-    app = App()
+    app = Widget()
     app.start()
