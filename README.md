@@ -16,7 +16,7 @@ To get started you juste have to download the main.exe file
 
 	-Log in, right click the "Select this account" button, copy the link address, and paste it in the terminal window
 	
-	-Then the app will try to generate cookies and close, you just have to re-open it and normaly, and then, it shiuld run 
+	-Then the app will try to generate cookies and close, you just have to re-open it and normaly, it should run 
 	
 ## Buttons
 
