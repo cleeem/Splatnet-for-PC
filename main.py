@@ -1,4 +1,5 @@
 from genericpath import exists
+import webbrowser
 import customtkinter
 import os
 import tkinter 
@@ -241,6 +242,12 @@ class App(customtkinter.CTk):
         except:
             self.create_img_home()
 
+    def open_git_app(self):
+        webbrowser.open(url="https://github.com/cleeem/Splatnet-for-PC")
+
+    def open_git_s2s(self):
+        webbrowser.open(url="https://github.com/frozenpandaman/splatnet2statink")
+
     def home(self):
         self.crea_frame_data()
         
@@ -277,6 +284,12 @@ class App(customtkinter.CTk):
 
         label_info_2 = customtkinter.CTkLabel(master=frame_2, image=self.image_home ,text_font=("Roboto Medium", int(self.font_size//1.6)), text_color="white")  # font name and size in px
         label_info_2.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+
+        self.button_github_app = customtkinter.CTkButton(master=self.frame_data, text="See the app\nOn github", text_font=("Roboto Medium", int(self.font_size*1.5)), command=self.open_git_app, corner_radius=6, width=self.frame_data._current_width*0.3, height=self.frame_data._current_height*0.3)
+        self.button_github_app.place(relx=0.8, rely=0.35, anchor=tkinter.CENTER)
+
+        self.button_github_s2s = customtkinter.CTkButton(master=self.frame_data, text="See \nsplatnet2statink\nOn github", text_font=("Roboto Medium", int(self.font_size*1.5)), command=self.open_git_s2s, corner_radius=6, width=self.frame_data._current_width*0.3, height=self.frame_data._current_height*0.3)
+        self.button_github_s2s.place(relx=0.8, rely=0.7, anchor=tkinter.CENTER)
 
     def create_img_result(self, indice):
         temp = splatnet.Game()
@@ -465,7 +478,6 @@ class App(customtkinter.CTk):
                 fp.write(response.content)
                 fp.close()
 
-
     def get_maps(self, test : test_schedule.Rotation):
         img_width = int((self.frame_data._current_width*0.85)*0.3)
         img_height = int((self.frame_data._current_width*0.8)*0.16)
@@ -564,6 +576,5 @@ if __name__ == "__main__":
     app.start()
 
 
-"""
-pyinstaller --noconfirm --onefile --console --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/dbs.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/game.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/iksm.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/image_home.png;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/image_results.png;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/salmonrun.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/splatnet2statink.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/test_schedule.py;." --add-data "c:\users\cleme\appdata\local\programs\python\python310\lib\site-packages/customtkinter;customtkinter"  "C:/Users/cleme/code/python/Splatnet-for-PC/main.py"
-"""
+
+# pyinstaller --noconfirm --onefile --console --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/dbs.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/game.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/iksm.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/image_home.png;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/image_results.png;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/salmonrun.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/splatnet2statink.py;." --add-data "C:/Users/cleme/code/python/Splatnet-for-PC/test_schedule.py;." --add-data "c:\users\cleme\appdata\local\programs\python\python310\lib\site-packages/customtkinter;customtkinter"  "C:/Users/cleme/code/python/Splatnet-for-PC/main.py"

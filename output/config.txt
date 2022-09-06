@@ -1,5 +1,0 @@
-{
-    "cookie": "f4165301486b2194a53ccc10326c6784e5111289",
-    "session_token": "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjI0MTQ0NzIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMubmludGVuZG8uY29tIiwidHlwIjoic2Vzc2lvbl90b2tlbiIsImF1ZCI6IjcxYjk2M2MxYjdiNmQxMTkiLCJzdDpzY3AiOlswLDgsOSwxNywyM10sInN1YiI6ImFjZWFkZTIzYjg0M2FjYjYiLCJqdGkiOjk3NTQzOTQ2NzIsImV4cCI6MTcyNTQ4NjQ3Mn0.FO6r2ui5trp334deTtFq6d8Znj8hkyliI_W7jYJ_7Z0",
-    "user_lang": ""
-}
