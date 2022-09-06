@@ -40,7 +40,8 @@ To get started you juste have to download the main.exe file
 	
 ### Widget
 
-	-Create a little window that shows information such as you current power, your kda on the last game, the amount of power you gained/loose (starting when the widget was created) and you can update it using the blue button.
+	-Create a little window that shows information such as you current power, your kda on the last game, 
+	the amount of power you gained/loose (starting when the widget was created) and you can update it using the blue button.
 	
 ![image](https://user-images.githubusercontent.com/85625458/188693810-f0cdd353-ecf8-43e2-b113-fe339e028b6b.png)
 	
