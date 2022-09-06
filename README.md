@@ -65,9 +65,14 @@ The main credit goes to [splatnet2statink](https://github.com/frozenpandaman/spl
 WARNING : splatnet2statink is released under the GPL v3 license, which requires attribution: you must disclose the source of any code you're using as a 
 basis, i.e. give credit, explicitly state any significant changes, and also release your project under the same terms.
 	
+If you want to make any modification on the code that is not from splatnet2statink, you can.
+
+Else please reach out to the creators of splatnet2statink.
+
+Here are the files that are from splatnet2statink : dbs.py , iksm.py , salmonrun.py , splatnet2statink.py
 	
 also used [customtkinter](https://github.com/TomSchimansky/CustomTkinter) to create the interface
 	
-## License
+## License used by splatnet2statink 
 
 [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
