@@ -58,13 +58,13 @@ To get started you juste have to download the main.exe file
 	
 ## Credits
 
-	-The main credit goes to [splatnet2statink](https://github.com/frozenpandaman/splatnet2statink), i use it to get the informations from the Switch online app 
-	(i modified some code in the splanet2statink file and commented the part that were not used in the app, including the part that upload the game info to 
-	[stat.ink](https://stat.ink/) 
-	WARNING : splatnet2statink is released under the GPL v3 license, which requires attribution: you must disclose the source of any code you're using as a 
-	basis, i.e. give credit, explicitly state any significant changes, and also release your project under the same terms.
+The main credit goes to [splatnet2statink](https://github.com/frozenpandaman/splatnet2statink), i use it to get the informations from the Switch online app 
+(i modified some code in the splanet2statink file and commented the part that were not used in the app, including the part that upload the game info to 
+[stat.ink](https://stat.ink/) 
+WARNING : splatnet2statink is released under the GPL v3 license, which requires attribution: you must disclose the source of any code you're using as a 
+basis, i.e. give credit, explicitly state any significant changes, and also release your project under the same terms.
 	
 	
-	-I also used [customtkinter](https://github.com/TomSchimansky/CustomTkinter) to create the interface
+also used [customtkinter](https://github.com/TomSchimansky/CustomTkinter) to create the interface
 	
 	
