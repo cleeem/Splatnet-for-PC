@@ -68,4 +68,6 @@ basis, i.e. give credit, explicitly state any significant changes, and also rele
 	
 also used [customtkinter](https://github.com/TomSchimansky/CustomTkinter) to create the interface
 	
-	
+## License
+
+[GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
