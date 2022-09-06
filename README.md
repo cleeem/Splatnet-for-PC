@@ -8,9 +8,14 @@ To get started you juste have to download the main.exe file
 
 -Then, it will open 2 things:
 
-	-> a command terminal
+	-> a terminal window that contain the informations to follow for the setup
 	
 	-> an internet window like this
 	
-	![image](https://user-images.githubusercontent.com/85625458/188688504-81a12d03-9a8b-4330-a11d-6122e84e295c.png)
+![image](https://user-images.githubusercontent.com/85625458/188688504-81a12d03-9a8b-4330-a11d-6122e84e295c.png)
 
+	-> Log in, right click the "Select this account" button, copy the link address, and paste it in the terminal window
+	
+	-> Then the app will try to generate cookies and close, you just have to re-open it and normaly, and then, it shiuld run 
+	
+	
